@@ -9,8 +9,6 @@ This project focuses on analysing customer shopping behaviour to identify purcha
 
 The project follows an end-to-end data analytics workflow, starting with data loading and exploration in Python, followed by data cleaning, SQL-based analysis using MySQL, and interactive dashboard development in Power BI.
 
-A final analytical report and presentation were also prepared to communicate the key findings and insights.
-
 2. Dataset
 
 The project uses a customer shopping behaviour dataset containing information about customer demographics, purchasing habits, product categories, discounts, and subscription status.
@@ -24,8 +22,6 @@ Key dataset attributes include:
 - Subscription Status
 - Discount Applied
 - Promo Code Used
-
-*Note: Dataset source and record count can be added here.*
 
 3. Tools & Technologies
 
@@ -163,6 +159,6 @@ It showcases practical skills in data preparation, exploratory analysis, databas
 
 ---
 
-Author: Your Name  
+Author: Shaik Fazila Zainab
 Project: Customer Behaviour Analysis  
 Technologies: Python | MySQL | Power BI | Gamma
