@@ -81,3 +81,80 @@ sum(purchase_amount) as total_revenue
 from customer_shopping_behavior.customer
 group by age_group
 order by total_revenue desc;
+
+# 11 Which items had at least 160 orders?
+
+SELECT item_purchased, COUNT(*) AS orders
+FROM customer_shopping_behavior.customer
+GROUP BY item_purchased
+HAVING COUNT(*) >= 160
+ORDER BY orders DESC;
+
+#12 Revenue and % of total for each category
+SELECT category,
+       SUM(purchase_amount) AS revenue,
+       ROUND(100 * SUM(purchase_amount) / SUM(SUM(purchase_amount)) OVER (), 1) AS pct_of_revenue
+FROM customer_shopping_behavior.customer
+GROUP BY category
+ORDER BY revenue DESC;
+ Clothing and Accessories bring about 77% of revenue.
+
+#13 [Key finding] Who gets subscriptions and discounts, by gender?
+SELECT gender,
+       COUNT(*) AS customers,
+       ROUND(100 * SUM(CASE WHEN subscription_status = 'Yes' THEN 1 ELSE 0 END) / COUNT(*), 1) AS pct_subscribed,
+       ROUND(100 * SUM(CASE WHEN discount_applied = 'Yes' THEN 1 ELSE 0 END) / COUNT(*), 1) AS pct_discounted
+FROM customer_shopping_behavior.customer
+GROUP BY gender;
+
+#15  Customer value tiers: share of customers vs share of revenue
+WITH tiers AS (
+    SELECT purchase_amount,
+           CASE WHEN purchase_amount <= 40 THEN '1. Low (up to $40)'
+                WHEN purchase_amount <= 70 THEN '2. Mid ($41-70)'
+                ELSE '3. High (above $70)' END AS spend_tier
+                FROM customer_shopping_behavior.customer
+)
+SELECT spend_tier,
+       COUNT(*) AS customers,
+       ROUND(100 * COUNT(*) / SUM(COUNT(*)) OVER (), 1) AS pct_of_customers,
+       ROUND(100 * SUM(purchase_amount) / SUM(SUM(purchase_amount)) OVER (), 1) AS pct_of_revenue
+FROM tiers
+GROUP BY spend_tier
+ORDER BY spend_tier;
+
+#16 Top 10 states by revenue
+SELECT RANK() OVER (ORDER BY SUM(purchase_amount) DESC) AS state_rank,
+       location,
+       SUM(purchase_amount) AS revenue
+FROM customer_shopping_behavior.customer
+GROUP BY location
+ORDER BY state_rank
+LIMIT 10;
+
+#17 Average spend by season
+SELECT season,
+       COUNT(*)                       AS purchases,
+       ROUND(AVG(purchase_amount), 2) AS avg_spend
+FROM customer_shopping_behavior.customer
+GROUP BY season
+ORDER BY avg_spend DESC; 
+                
+#18 Which categories rely most on discounts?
+SELECT category,
+       ROUND(100 * SUM(CASE WHEN discount_applied = 'Yes' THEN 1 ELSE 0 END) / COUNT(*), 1) AS discount_rate_pct,
+       ROUND(AVG(purchase_amount), 2) AS avg_spend
+FROM customer_shopping_behavior.customer
+GROUP BY category
+ORDER BY discount_rate_pct DESC;
+
+#19 A saved query that feeds the Power BI KPI cards
+CREATE OR REPLACE VIEW vw_kpi_summary AS
+SELECT COUNT(*)                                                     AS customers,
+       SUM(purchase_amount)                                         AS total_revenue,
+       ROUND(AVG(purchase_amount), 2)                               AS avg_purchase,
+       ROUND(AVG(review_rating), 2)                                 AS avg_rating,
+       ROUND(100 * SUM(CASE WHEN subscription_status = 'Yes' THEN 1 ELSE 0 END) / COUNT(*), 1) AS subscriber_pct,
+       ROUND(100 * SUM(CASE WHEN discount_applied = 'Yes' THEN 1 ELSE 0 END) / COUNT(*), 1)   AS discounted_pct
+FROM customer_shopping_behavior.customer;
+SELECT * FROM vw_kpi_summary;
