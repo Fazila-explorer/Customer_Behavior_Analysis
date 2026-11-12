@@ -1,5 +1,5 @@
 # Customer_Behavior_Analysis
-Performed end-to-end customer behavior analysis by cleaning and exploring data with Python, extracting business insights using SQL, and developing an interactive Power BI dashboard to visualize purchasing patterns, spending trends, and customer preferences.
+This project analyzes 3,900 retail customer records to understand who buys, what they spend, and whether discounts and subscriptions pay off. Data was cleaned in Python, analyzed with 18 MySQL queries, and presented in an interactive Power BI dashboard. Key findings: Clothing and Accessories drive about 76% of revenue, purchases above $70 are 37% of orders but 53% of revenue, and subscribers and discounted buyers spend no more than other customers.
 
 # Customer Behaviour Analysis | Python, MySQL & Power BI
 
